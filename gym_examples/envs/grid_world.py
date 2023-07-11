@@ -1,3 +1,5 @@
+# Code for producing grid world environment
+
 import gym
 from gym import spaces
 import pygame
