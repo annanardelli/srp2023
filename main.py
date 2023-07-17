@@ -38,9 +38,10 @@ for x in range(5):
         states.update({pair : index})
         index = index + 1
         
-print(states)
-
-for _ in range(1000):    
+for _ in range(1000):  
+    pairTuple = tuple(observation["agent"])
+    state = states[pairTuple]
+    
     action = env.action_space.sample()  # agent policy that uses the observation and info
     observation, reward, terminated, truncated, info = env.step(action)
 
