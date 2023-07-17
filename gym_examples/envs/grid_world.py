@@ -25,6 +25,7 @@ class GridWorldEnv(gym.Env):
         # We have 4 actions, corresponding to "right", "up", "left", "down", "right"
         self.action_space = spaces.Discrete(4)
 
+            
         """
         The following dictionary maps abstract actions from `self.action_space` to 
         the direction we will walk in if that action is taken.
@@ -64,14 +65,13 @@ class GridWorldEnv(gym.Env):
         # We need the following line to seed self.np_random
         super().reset(seed=seed)
         
-        # Same place target location reset
+        # Set target location (stationary)
         self._target_location = np.array([4,4])
 
         # Choose the agent's location uniformly at random
         self._agent_location = self._target_location
         while np.array_equal(self._agent_location, self._target_location):
             self._agent_location = self.np_random.integers(0, self.size, size=2, dtype=int)
-        print(self._agent_location)
         
         # Same place agent location reset
         # self._agent_location = np.array([0,0])

@@ -11,7 +11,8 @@ Created on Wed Jul  5 13:19:30 2023
 import gym
 from gym import spaces
 import pygame
-import numpy as np
+import numpy as np 
+import random
 
 from gym.envs.registration import register
 
@@ -24,7 +25,22 @@ register(
 env = gym.make("gym_examples/GridWorld-v0", render_mode="human")
 observation, info = env.reset()
 
-for _ in range(1000):
+alpha = 0.1
+gamma = 0.6
+epsilon = 0.2
+q = np.zeros([25, 4])
+
+states = {} 
+index = 0
+for x in range(5): 
+    for y in range(5): 
+        pair = (x,y)
+        states.update({pair : index})
+        index = index + 1
+        
+print(states)
+
+for _ in range(1000):    
     action = env.action_space.sample()  # agent policy that uses the observation and info
     observation, reward, terminated, truncated, info = env.step(action)
 
