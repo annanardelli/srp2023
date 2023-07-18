@@ -33,8 +33,8 @@ print(size)
 
 states = {}
 index = 0
-for y in range(size):
-    for x in range(size):
+for x in range(size):
+    for y in range(size):
         pair = (x, y)
         states.update({pair: index})
         index = index + 1
@@ -58,6 +58,7 @@ for episode in range(num_episodes):
     state = states[pairTuple]
     terminated = False
     truncated = False
+    print(state)
 
     for s in range(max_steps):
         # exploration-exploitation tradeoff
@@ -69,13 +70,13 @@ for episode in range(num_episodes):
             action = np.argmax(q[state,:])
 
         # take action and observe reward
+        print(action)
         observation, reward, terminated, truncated, info = env.step(action)
         print(observation)
         pairTuple = tuple(observation["agent"])
         print(pairTuple)
         new_state = states[pairTuple]
         print(new_state)
-        print(action)
         # Q-learning algorithm
         q[state,action] = q[state,action] + alpha * (reward + gamma * np.max(q[new_state,:])-q[state,action])
 
