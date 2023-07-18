@@ -35,7 +35,7 @@ states = {}
 index = 0
 for x in range(size):
     for y in range(size):
-        pair = (x, y)
+        pair = (y, x)
         states.update({pair: index})
         index = index + 1
 print(states)
