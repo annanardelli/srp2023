@@ -98,7 +98,7 @@ for _ in range(max_steps):
     state = new_state
 
     if terminated or truncated:
-        print(_)
+        print("Steps Taken: " + str(_+1))
         break
 
 env.close()

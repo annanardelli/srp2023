@@ -148,7 +148,9 @@ class GridWorldEnv(gym.Env):
                           [5,-5,-5,-10],
                           [5,-5,-5,-10],
                           [-10,-5,-5,-10]]
-        reward = 100 if terminated else -1  # Binary sparse rewards
+        reward = 100 if terminated else rewards_matrix[state][action]  #rewards_matrix
+        # Binary sparse rewards
+        # reward = 100 if terminated else -1  #rewards_matrix
 
         if self.render_mode == "human":
             self._render_frame()
