@@ -42,8 +42,8 @@ decay_rate = 0.01 # of epsilon
 q = np.zeros([state_size, action_size])
 
 # training variables
-num_episodes = 1
-max_steps = 1  # per episode
+num_episodes = 1000
+max_steps = 100  # per episode
 
 for episode in range(num_episodes):
     # reset the environment
@@ -81,14 +81,14 @@ for episode in range(num_episodes):
             break
 print(q)
 
-"""
+
 observation, info = env.reset()
 pairTuple = tuple(observation["agent"])
 state = states[pairTuple]
 rewards = 0
 
 for _ in range(max_steps):
-
+    action = np.argmax(q[state, :])
     observation, reward, terminated, truncated, info = env.step(action)
     pairTuple = tuple(observation["agent"])
     new_state = states[pairTuple]
@@ -100,5 +100,5 @@ for _ in range(max_steps):
     if terminated or truncated:
         print(_)
         break
-"""
+
 env.close()

@@ -63,7 +63,6 @@ class GridWorldEnv(gym.Env):
                 pair = (y, x)
                 states.update({pair: index})
                 index = index + 1
-        print(states)
         return states
 
     def _get_obs(self):
@@ -122,6 +121,8 @@ class GridWorldEnv(gym.Env):
 
         #rewards
         states = self.get_states()
+        pairTuple = tuple(observation["agent"])
+        state = states[pairTuple]
         rewards_matrix = [[5,-10,-10,5],
                           [0,-10,-5,5],
                           [0,-10,-5,5],
@@ -147,7 +148,7 @@ class GridWorldEnv(gym.Env):
                           [5,-5,-5,-10],
                           [5,-5,-5,-10],
                           [-10,-5,-5,-10]]
-        reward = 20 if terminated else 1  # Binary sparse rewards
+        reward = 100 if terminated else -1  # Binary sparse rewards
 
         if self.render_mode == "human":
             self._render_frame()
