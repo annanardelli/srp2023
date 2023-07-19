@@ -54,6 +54,18 @@ class GridWorldEnv(gym.Env):
         return self.size * self.size
     def get_size(self):
         return self.size
+
+    def get_states(self):
+        states = {}
+        index = 0
+        for x in range(self.size):
+            for y in range(self.size):
+                pair = (y, x)
+                states.update({pair: index})
+                index = index + 1
+        print(states)
+        return states
+
     def _get_obs(self):
         return {"agent": self._agent_location, "target": self._target_location}
 
@@ -105,9 +117,37 @@ class GridWorldEnv(gym.Env):
         )
         # An episode is done iff the agent has reached the target
         terminated = np.array_equal(self._agent_location, self._target_location)
-        reward = 20 if terminated else 1  # Binary sparse rewards
         observation = self._get_obs()
         info = self._get_info()
+
+        #rewards
+        states = self.get_states()
+        rewards_matrix = [[5,-10,-10,5],
+                          [0,-10,-5,5],
+                          [0,-10,-5,5],
+                          [0,-10,-5,5],
+                          [-10,-10,-5,5],
+                          [5,-5,-10,0],
+                          [5,-5,-5,5],
+                          [0,-5,-5,5],
+                          [0,-5,-5,5],
+                          [-10,-5,-5,5],
+                          [5,-5,-10,0],
+                          [5,-5,-5,0],
+                          [5,-5,-5,5],
+                          [0,-5,-5,5],
+                          [-10,-5,-5,5],
+                          [5,-5,-10,5],
+                          [5,-5,-5,5],
+                          [5,-5,-5,5],
+                          [5,-5,-5,5],
+                          [-10,-5,-5,5],
+                          [5,-5,-10,-10],
+                          [5,-5,-5,-10],
+                          [5,-5,-5,-10],
+                          [5,-5,-5,-10],
+                          [-10,-5,-5,-10]]
+        reward = 20 if terminated else 1  # Binary sparse rewards
 
         if self.render_mode == "human":
             self._render_frame()

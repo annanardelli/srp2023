@@ -31,13 +31,7 @@ print(action_size)
 size = env.get_size()
 print(size)
 
-states = {}
-index = 0
-for x in range(size):
-    for y in range(size):
-        pair = (y, x)
-        states.update({pair: index})
-        index = index + 1
+states = env.get_states()
 print(states)
 
 alpha = 0.1  # learning rate
@@ -48,8 +42,8 @@ decay_rate = 0.01 # of epsilon
 q = np.zeros([state_size, action_size])
 
 # training variables
-num_episodes = 1000
-max_steps = 100  # per episode
+num_episodes = 1
+max_steps = 1  # per episode
 
 for episode in range(num_episodes):
     # reset the environment
