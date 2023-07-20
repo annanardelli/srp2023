@@ -192,6 +192,15 @@ class GridWorldEnv(gym.Env):
                 (pix_square_size, pix_square_size),
             ),
         )
+        #Code to color in a certain box
+        pygame.draw.rect(
+            canvas,
+            (0, 255, 0),
+            pygame.Rect(
+                pix_square_size * np.array([2,2]),
+                (pix_square_size, pix_square_size),
+            ),
+        )
         # Now we draw the agent
         pygame.draw.circle(
             canvas,
