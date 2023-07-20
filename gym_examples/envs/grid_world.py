@@ -37,6 +37,8 @@ class GridWorldEnv(gym.Env):
             3: np.array([0, 1]),
         }
 
+        self.is_trained = False
+
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
 
@@ -64,6 +66,10 @@ class GridWorldEnv(gym.Env):
                 states.update({pair: index})
                 index = index + 1
         return states
+
+    def trained(self):
+        self.is_trained = True
+        print(self.is_trained)
 
     def _get_obs(self):
         return {"agent": self._agent_location, "target": self._target_location}
@@ -102,8 +108,9 @@ class GridWorldEnv(gym.Env):
         observation = self._get_obs()
         info = self._get_info()
 
-        if self.render_mode == "human":
-            self._render_frame()
+        if self.is_trained:
+            if self.render_mode == "human":
+                self._render_frame()
 
         return observation, info
 
@@ -152,8 +159,9 @@ class GridWorldEnv(gym.Env):
         # Binary sparse rewards
         # reward = 100 if terminated else -1  #rewards_matrix
 
-        if self.render_mode == "human":
-            self._render_frame()
+        if self.is_trained:
+            if self.render_mode == "human":
+                self._render_frame()
 
         return observation, reward, terminated, False, info
 

@@ -22,7 +22,7 @@ register(
     max_episode_steps=300,
 )
 
-env = gym.make("gym_examples/GridWorld-v0", render_mode="rgb_array")
+env = gym.make("gym_examples/GridWorld-v0", render_mode="human")
 observation, info = env.reset()
 state_size = env.get_state_size()
 print(state_size)
@@ -83,6 +83,8 @@ for episode in range(num_episodes):
         if terminated or truncated:
             break
 print(q)
+
+env.trained()
 
 
 observation, info = env.reset()
