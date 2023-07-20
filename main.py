@@ -34,10 +34,10 @@ print(size)
 states = env.get_states()
 print(states)
 
-alpha = 0.1  # learning rate
-gamma = 0.6  # discount rate
-epsilon = 0.5  # probability that our agent will explore
-decay_rate = 0.01 # of epsilon
+alpha = 0.3  # learning rate
+gamma = 0.8  # discount rate
+epsilon = 1.0  # probability that our agent will explore
+decay_rate = 0.001 # of epsilon
 
 q = np.zeros([state_size, action_size])
 
@@ -63,6 +63,9 @@ for episode in range(num_episodes):
             # exploit
             action = np.argmax(q[state,:])
 
+        # epsilon decreases exponentially --> our agent will explore less and less
+        epsilon = np.exp(-decay_rate * episode)
+        print(epsilon)
         # take action and observe reward
         print(action)
         observation, reward, terminated, truncated, info = env.step(action)
