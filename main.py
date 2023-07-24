@@ -52,7 +52,7 @@ for episode in range(num_episodes):
     state = states[pairTuple]
     terminated = False
     truncated = False
-    print(state)
+    print(f"Current State {state}")
 
     for s in range(max_steps):
         # exploration-exploitation tradeoff
@@ -65,15 +65,16 @@ for episode in range(num_episodes):
 
         # epsilon decreases exponentially --> our agent will explore less and less
         epsilon = np.exp(-decay_rate * episode)
-        print(epsilon)
+        print(f"Epsilon: {epsilon}")
         # take action and observe reward
-        print(action)
+        print(f"Action: {action}")
         observation, reward, terminated, truncated, info = env.step(action)
         print(observation)
         pairTuple = tuple(observation["agent"])
         print(pairTuple)
         new_state = states[pairTuple]
-        print(new_state)
+        print(f"New State {new_state}")
+        print(f"Reward: {reward}")
         # Q-learning algorithm
         q[state,action] = q[state,action] + alpha * (reward + gamma * np.max(q[new_state,:])-q[state,action])
 
