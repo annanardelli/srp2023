@@ -23,7 +23,7 @@ class GridWorldEnv(gym.Env):
         )
 
         # We have 4 actions, corresponding to "right", "up", "left", "down"
-        self.action_space = spaces.Discrete(4)
+        self.action_space = spaces.Discrete(5)
 
         """
         The following dictionary maps abstract actions from `self.action_space` to 
@@ -35,9 +35,11 @@ class GridWorldEnv(gym.Env):
             1: np.array([0, -1]),
             2: np.array([-1, 0]),
             3: np.array([0, 1]),
+            4: np.array([0, 0]) #Pick up
         }
 
-        self.is_trained = False
+        self.is_trained = True
+        self.is_picked_up = False
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
@@ -97,6 +99,7 @@ class GridWorldEnv(gym.Env):
         # Same place agent location reset
         self._agent_location = np.array([0,0])
 
+
         # Random target location reset
         """
         self._target_location = self._agent_location
@@ -104,6 +107,9 @@ class GridWorldEnv(gym.Env):
             self._target_location = self.np_random.integers(
                 0, self.size, size=2, dtype=int)
             """
+        # Med location
+        self._med_location = np.array([0,self.size-1])
+        self.is_picked_up = False
 
         observation = self._get_obs()
         info = self._get_info()
@@ -121,23 +127,26 @@ class GridWorldEnv(gym.Env):
         print(f"Grid Action: {action}")
 
         direction = self._action_to_direction[action]
-        # We use `np.clip` to make sure we don't leave the grid
 
-        observation = self._get_obs()
-
+        observation = self._get_obs() #Gets original/current state
+        #Indexes current state
         states = self.get_states()
         pairTuple = tuple(observation["agent"])
         state = states[pairTuple]
         print(f"Grid State: {state}")
 
+        # We use `np.clip` to make sure we don't leave the grid
         self._agent_location = np.clip(
             self._agent_location + direction, 0, self.size - 1
         )
-        # An episode is done iff the agent has reached the target
+
+        # An episode is done if the agent has dropped off the med and reached the target
         terminated = np.array_equal(self._agent_location, self._target_location)
-        observation = self._get_obs()
+
+        observation = self._get_obs() #new state
         info = self._get_info()
 
+        """
         # rewards
         rewards_matrix = [[5,-10,-10,5],
                           [0,-10,-5,5],
@@ -165,8 +174,18 @@ class GridWorldEnv(gym.Env):
                           [5,-5,-5,-10],
                           [-10,-5,-5,-10]]
         reward = 100 if terminated else rewards_matrix[state][action]  #rewards_matrix
+        """
         # Binary sparse rewards
-        # reward = 100 if terminated else -1  #rewards_matrix
+        if terminated:
+            reward = 100
+        elif action == 4:
+            if np.array_equal(self._agent_location, self._med_location):
+                self.is_picked_up = True
+                reward = 25
+            else:
+                reward = -15
+        else:
+            reward = -1
 
         if self.is_trained:
             if self.render_mode == "human":
@@ -212,21 +231,22 @@ class GridWorldEnv(gym.Env):
                 (pix_square_size, pix_square_size),
             ),
         )
-        #Pick up
+        #Pick up location
         pygame.draw.rect(
             canvas,
             (0, 255, 0),
             pygame.Rect(
-                pix_square_size * np.array([0,self.size-1]),
+                pix_square_size * self._med_location,
                 (pix_square_size, pix_square_size),
             ),
         )
-        pygame.draw.circle(
-            canvas,
-            (128, 128, 128),
-            (np.array([0,self.size-1]) + 0.5) * pix_square_size,
-            pix_square_size / 5,
-        )
+        if self.is_picked_up == False:
+            pygame.draw.circle(
+                canvas,
+                (255, 120, 120),
+                (self._med_location + 0.5) * pix_square_size,
+                pix_square_size / 5,
+            )
 
         # Now we draw the agent
         pygame.draw.circle(
@@ -235,6 +255,13 @@ class GridWorldEnv(gym.Env):
             (self._agent_location + 0.5) * pix_square_size,
             pix_square_size / 3,
         )
+        if self.is_picked_up:
+            pygame.draw.circle(
+                canvas,
+                (255, 120, 120),
+                (self._agent_location + 0.5) * pix_square_size,
+                pix_square_size / 5,
+            )
 
         # Finally, add some gridlines
         for x in range(self.size + 1):
