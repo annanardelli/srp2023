@@ -221,6 +221,13 @@ class GridWorldEnv(gym.Env):
                 (pix_square_size, pix_square_size),
             ),
         )
+        pygame.draw.circle(
+            canvas,
+            (128, 128, 128),
+            (np.array([0,self.size-1]) + 0.5) * pix_square_size,
+            pix_square_size / 5,
+        )
+
         # Now we draw the agent
         pygame.draw.circle(
             canvas,
