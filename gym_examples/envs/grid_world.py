@@ -111,6 +111,8 @@ class GridWorldEnv(gym.Env):
         if self.is_trained:
             if self.render_mode == "human":
                 self._render_frame()
+            elif self.render_mode == "rgb_array":
+                self.render()
 
         return observation, info
 
@@ -169,6 +171,8 @@ class GridWorldEnv(gym.Env):
         if self.is_trained:
             if self.render_mode == "human":
                 self._render_frame()
+            elif self.render_mode == "rgb_array":
+                self.render()
 
         return observation, reward, terminated, False, info
 
@@ -199,12 +203,21 @@ class GridWorldEnv(gym.Env):
                 (pix_square_size, pix_square_size),
             ),
         )
-        #Code to color in a certain box
+        #Block
+        pygame.draw.rect(
+            canvas,
+            (0, 0, 0),
+            pygame.Rect(
+                pix_square_size * np.array([2,2]),
+                (pix_square_size, pix_square_size),
+            ),
+        )
+        #Pick up
         pygame.draw.rect(
             canvas,
             (0, 255, 0),
             pygame.Rect(
-                pix_square_size * np.array([2,2]),
+                pix_square_size * np.array([0,self.size-1]),
                 (pix_square_size, pix_square_size),
             ),
         )
