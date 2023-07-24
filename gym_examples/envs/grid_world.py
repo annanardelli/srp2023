@@ -69,7 +69,7 @@ class GridWorldEnv(gym.Env):
 
     def trained(self):
         self.is_trained = True
-        print(self.is_trained)
+        input("Agent is trained. Press Enter to continue...")
 
     def _get_obs(self):
         return {"agent": self._agent_location, "target": self._target_location}
@@ -116,8 +116,18 @@ class GridWorldEnv(gym.Env):
 
     def step(self, action):
         # Map the action (element of {0,1,2,3}) to the direction we walk in
+        print(f"Grid Action: {action}")
+
         direction = self._action_to_direction[action]
         # We use `np.clip` to make sure we don't leave the grid
+
+        observation = self._get_obs()
+
+        states = self.get_states()
+        pairTuple = tuple(observation["agent"])
+        state = states[pairTuple]
+        print(f"Grid State: {state}")
+
         self._agent_location = np.clip(
             self._agent_location + direction, 0, self.size - 1
         )
@@ -126,10 +136,7 @@ class GridWorldEnv(gym.Env):
         observation = self._get_obs()
         info = self._get_info()
 
-        #rewards
-        states = self.get_states()
-        pairTuple = tuple(observation["agent"])
-        state = states[pairTuple]
+        # rewards
         rewards_matrix = [[5,-10,-10,5],
                           [0,-10,-5,5],
                           [0,-10,-5,5],
@@ -137,17 +144,17 @@ class GridWorldEnv(gym.Env):
                           [-10,-10,-5,5],
                           [5,-5,-10,0],
                           [5,-5,-5,5],
-                          [0,-5,-5,5],
+                          [0,-5,-5,-1000],
                           [0,-5,-5,5],
                           [-10,-5,-5,5],
                           [5,-5,-10,0],
-                          [5,-5,-5,0],
+                          [-1000,-5,-5,0],
                           [5,-5,-5,5],
-                          [0,-5,-5,5],
+                          [0,-5,-1000,5],
                           [-10,-5,-5,5],
                           [5,-5,-10,5],
                           [5,-5,-5,5],
-                          [5,-5,-5,5],
+                          [5,-1000,-5,5],
                           [5,-5,-5,5],
                           [-10,-5,-5,5],
                           [5,-5,-10,-10],
