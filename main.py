@@ -74,8 +74,14 @@ for episode in range(num_episodes):
         print(pairTuple)
         new_state = states[pairTuple]
         print(new_state)
+        if random.uniform(0,1) < epsilon:
+            # explore
+            new_action = env.action_space.sample()
+        else:
+            # exploit
+            new_action = np.argmax(q[new_state,:])
         # Q-learning algorithm
-        q[state,action] = q[state,action] + alpha * (reward + gamma * np.max(q[new_state,:])-q[state,action])
+        q[state,action] = q[state,action] + alpha * (reward + gamma * np.max(q[new_state,new_action])-q[state,action])
 
         # Update to our new state
         state = new_state
