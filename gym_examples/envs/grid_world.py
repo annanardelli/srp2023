@@ -38,7 +38,7 @@ class GridWorldEnv(gym.Env):
             4: np.array([0, 0]) #Pick up
         }
 
-        self.is_trained = True
+        self.is_trained = False
         self.is_picked_up = False
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
@@ -179,9 +179,9 @@ class GridWorldEnv(gym.Env):
         if terminated:
             reward = 100
         elif action == 4:
-            if np.array_equal(self._agent_location, self._med_location):
+            if np.array_equal(self._agent_location, self._med_location) and not self.is_picked_up:
                 self.is_picked_up = True
-                reward = 25
+                reward = 100
             else:
                 reward = -15
         else:
