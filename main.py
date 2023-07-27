@@ -34,7 +34,7 @@ print(size)
 states = env.get_states()
 print(states)
 
-alpha = 0.3  # learning rate
+alpha = 0.8  # learning rate
 gamma = 0.8  # discount rate
 epsilon = 1.0  # probability that our agent will explore
 decay_rate = 0.001 # of epsilon
@@ -42,13 +42,13 @@ decay_rate = 0.001 # of epsilon
 q = np.zeros([state_size, action_size])
 
 # training variables
-num_episodes = 1000
-max_steps = 100  # per episode
+num_episodes = 10000
+max_steps = 10  # per episode
 
 for episode in range(num_episodes):
     # reset the environment
     observation, info = env.reset()
-    pairTuple = tuple(observation["agent"])
+    pairTuple = (tuple(observation["agent"]), env.get_is_picked_up())
     state = states[pairTuple]
     terminated = False
     truncated = False
@@ -70,7 +70,7 @@ for episode in range(num_episodes):
         print(f"Action: {action}")
         observation, reward, terminated, truncated, info = env.step(action)
         print(observation)
-        pairTuple = tuple(observation["agent"])
+        pairTuple = (tuple(observation["agent"]), env.get_is_picked_up())
         print(pairTuple)
         new_state = states[pairTuple]
         print(f"New State {new_state}")
@@ -87,7 +87,7 @@ print(q)
 
 env.trained()
 
-
+"""
 observation, info = env.reset()
 pairTuple = tuple(observation["agent"])
 state = states[pairTuple]
@@ -111,5 +111,5 @@ for _ in range(max_steps):
     if terminated or truncated:
         print("Steps Taken: " + str(_+1))
         break
-
+"""
 env.close()

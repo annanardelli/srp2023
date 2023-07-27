@@ -62,12 +62,19 @@ class GridWorldEnv(gym.Env):
     def get_states(self):
         states = {}
         index = 0
-        for x in range(self.size):
-            for y in range(self.size):
-                pair = (y, x)
-                states.update({pair: index})
-                index = index + 1
-        return states
+        for p in range(2):
+            for x in range(self.size):
+                for y in range(self.size):
+                    if p == 0:
+                        pair = ((y, x), False)
+                    elif p == 1:
+                        pair = ((y, x), True)
+                    states.update({pair: index})
+                    index = index + 1
+            return states
+
+    def get_is_picked_up(self):
+        return self.is_picked_up
 
     def trained(self):
         self.is_trained = True
@@ -131,7 +138,7 @@ class GridWorldEnv(gym.Env):
         observation = self._get_obs() #Gets original/current state
         #Indexes current state
         states = self.get_states()
-        pairTuple = tuple(observation["agent"])
+        pairTuple = (tuple(observation["agent"]), self.get_is_picked_up())
         state = states[pairTuple]
         print(f"Grid State: {state}")
 
@@ -143,7 +150,7 @@ class GridWorldEnv(gym.Env):
         # An episode is done if the agent has dropped off the med and reached the target
         terminated = np.array_equal(self._agent_location, self._target_location)
 
-        observation = self._get_obs() #new state
+        observation = self._get_obs() # new state
         info = self._get_info()
 
         """
@@ -178,12 +185,9 @@ class GridWorldEnv(gym.Env):
         # Binary sparse rewards
         if terminated:
             reward = 100
-        elif action == 4:
-            if np.array_equal(self._agent_location, self._med_location) and not self.is_picked_up:
-                self.is_picked_up = True
-                reward = 100
-            else:
-                reward = -15
+        elif action == 4 and np.array_equal(self._agent_location, self._med_location) and not self.is_picked_up:
+            self.is_picked_up = True
+            reward = 100
         else:
             reward = -1
 
