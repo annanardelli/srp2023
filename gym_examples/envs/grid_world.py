@@ -182,14 +182,13 @@ class GridWorldEnv(gym.Env):
         reward = 100 if terminated else rewards_matrix[state][action]  #rewards_matrix
         """
         # Binary sparse rewards
+        reward = -1
+        if terminated:
+            reward = 100
         for x in range(len(self._med_locations)):
-            if terminated:
-                reward = 100
-            elif action == 4 and np.array_equal(self._med_locations[x], self._agent_location) and not self.is_picked_up:
+            if action == 4 and np.array_equal(self._med_locations[x], self._agent_location) and not self.is_picked_up:
                 self.is_picked_up = True
                 reward = 100
-            else:
-                reward = -1
 
         if self.is_trained:
             if self.render_mode == "human":
