@@ -269,7 +269,7 @@ class GridWorldEnv(gym.Env):
             if self.is_picked_up[x] == False:
                 pygame.draw.circle(
                     canvas,
-                    (175, 30*y, 51*y),
+                    (205, 255-(33*y), 255-(51*y)),
                     (self._med_locations[x] + 0.5) * pix_square_size,
                     pix_square_size / (4+2*x),
                 )
@@ -288,7 +288,7 @@ class GridWorldEnv(gym.Env):
                 y = x + 1
                 pygame.draw.circle(
                     canvas,
-                    (175, 30*y, 51*y),
+                    (205, 255-(33*y), 255-(51*y)),
                     (self._agent_location + 0.5) * pix_square_size,
                     pix_square_size / (4+2*x),
                 )
