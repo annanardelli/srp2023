@@ -4,6 +4,7 @@ import gym
 from gym import spaces
 import pygame
 import numpy as np
+import itertools
 
 
 class GridWorldEnv(gym.Env):
@@ -38,7 +39,10 @@ class GridWorldEnv(gym.Env):
             4: np.array([0, 0]) #Pick up
         }
 
-        self.is_trained = False
+        # Initial trained status
+        self.is_trained = True
+
+
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
@@ -54,16 +58,16 @@ class GridWorldEnv(gym.Env):
         self.clock = None
 
     def get_state_size(self):
-        return self.size * self.size * len(self._med_locations) *2
+        return self.size * self.size * (2**len(self._med_locations))
     def get_size(self):
         return self.size
+
 
     def get_states(self):
         states = {}
         index = 0
+        """
         picked_up = np.array([False] * len(self._med_locations))
-        #for n in range(len(self._med_locations)):
-        counter = 0
         for t in range(2):
             picked_up[1] = False
             if t == 1:
@@ -78,6 +82,14 @@ class GridWorldEnv(gym.Env):
                         pair = ((y, x), tpl)
                         states.update({pair: index})
                         index = index + 1
+        """
+        for p in itertools.product([True, False], repeat=len(self._med_locations)):
+            for x in range(self.size):
+                for y in range(self.size):
+                    pair = ((y, x), p)
+                    states.update({pair: index})
+                    index = index + 1
+
         return states
 
     def get_is_picked_up(self):
@@ -122,7 +134,7 @@ class GridWorldEnv(gym.Env):
                 0, self.size, size=2, dtype=int)
             """
         # Med location
-        self._med_locations = np.array([[0,self.size-1], [self.size-1,0]])
+        self._med_locations = np.array([[0,self.size-1], [self.size-1,0], [2,3]])
         self.is_picked_up = np.array([False]*len(self._med_locations))
 
         # obstacle location
@@ -271,7 +283,7 @@ class GridWorldEnv(gym.Env):
                     canvas,
                     (205, 255-(33*y), 255-(51*y)),
                     (self._med_locations[x] + 0.5) * pix_square_size,
-                    pix_square_size / (4+2*x),
+                    pix_square_size / (4+x),
                 )
 
         # Now we draw the agent
@@ -290,7 +302,7 @@ class GridWorldEnv(gym.Env):
                     canvas,
                     (205, 255-(33*y), 255-(51*y)),
                     (self._agent_location + 0.5) * pix_square_size,
-                    pix_square_size / (4+2*x),
+                    pix_square_size / (4+x),
                 )
 
 
