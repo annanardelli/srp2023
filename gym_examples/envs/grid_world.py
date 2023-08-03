@@ -10,7 +10,8 @@ import itertools
 class GridWorldEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 2}
 
-    def __init__(self, render_mode=None, size=5):
+    def __init__(self, render_mode=None):
+        size = 12
         self.size = size  # The size of the square grid
         self.window_size = 512  # The size of the PyGame window
 
@@ -40,7 +41,7 @@ class GridWorldEnv(gym.Env):
         }
 
         # Initial trained status
-        self.is_trained = True
+        self.is_trained = False
 
 
 
@@ -158,7 +159,7 @@ class GridWorldEnv(gym.Env):
 
     def step(self, action):
         # Map the action (element of {0,1,2,3}) to the direction we walk in
-        print(f"Grid Action: {action}")
+        # print(f"Grid Action: {action}")
 
         direction = self._action_to_direction[action]
 
@@ -167,7 +168,7 @@ class GridWorldEnv(gym.Env):
         states = self.get_states()
         pairTuple = (tuple(observation["agent"]), self.get_is_picked_up())
         state = states[pairTuple]
-        print(f"Grid State: {state}")
+        # print(f"Grid State: {state}")
 
         # We use `np.clip` to make sure we don't leave the grid
         self._agent_location = np.clip(
