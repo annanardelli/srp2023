@@ -40,9 +40,9 @@ class GridWorldEnv(gym.Env):
         }
 
         # Initial trained status
-        self.is_trained = True
+        self.is_trained = False
 
-
+        self._obs_locations = None
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
@@ -61,7 +61,6 @@ class GridWorldEnv(gym.Env):
         return self.size * self.size * (2**len(self._med_locations))
     def get_size(self):
         return self.size
-
 
     def get_states(self):
         states = {}
@@ -99,6 +98,12 @@ class GridWorldEnv(gym.Env):
         self.is_trained = True
         input("Press Enter to watch trained agent...")
 
+    def set_obstacles(self, x1, y1, x2, y2):
+        self._obs_locations = np.array([[x1,y1], [x2,y2]])
+
+    def get_obstacles(self):
+        return self._obs_locations
+
     def _get_obs(self):
         return {"agent": self._agent_location, "target": self._target_location}
 
@@ -125,7 +130,6 @@ class GridWorldEnv(gym.Env):
         # Same place agent location reset
         self._agent_location = np.array([0,0])
 
-
         # Random target location reset
         """
         self._target_location = self._agent_location
@@ -133,13 +137,15 @@ class GridWorldEnv(gym.Env):
             self._target_location = self.np_random.integers(
                 0, self.size, size=2, dtype=int)
             """
+
         # Med location
-        self._med_locations = np.array([[0,self.size-1], [self.size-1,0], [2,3]])
+        self._med_locations = np.array([[0,self.size-1], [self.size-1,0]])
         self.is_picked_up = np.array([False]*len(self._med_locations))
 
         # obstacle location
-        self._obs_locations = np.array([[0,self.size-3], [self.size-3,0]])
+        self._obs_locations = self.get_obstacles()
         """
+        self._obs_locations = np.array([[0,self.size-3], [self.size-3,0]])
         self._obs_locations = np.array([self._target_location])
         while np.array_equal(self._obs_locations[0], self._target_location) or np.array_equal(self._obs_locations[0], self._agent_location):
             self._obs_locations[0] = self.np_random.integers(0, self.size, size=2, dtype=int)
@@ -158,7 +164,7 @@ class GridWorldEnv(gym.Env):
 
     def step(self, action):
         # Map the action (element of {0,1,2,3}) to the direction we walk in
-        print(f"Grid Action: {action}")
+        #print(f"Grid Action: {action}")
 
         direction = self._action_to_direction[action]
 
@@ -167,7 +173,7 @@ class GridWorldEnv(gym.Env):
         states = self.get_states()
         pairTuple = (tuple(observation["agent"]), self.get_is_picked_up())
         state = states[pairTuple]
-        print(f"Grid State: {state}")
+        #print(f"Grid State: {state}")
 
         # We use `np.clip` to make sure we don't leave the grid
         self._agent_location = np.clip(
@@ -217,7 +223,6 @@ class GridWorldEnv(gym.Env):
             if action == 4 and np.array_equal(self._med_locations[x], self._agent_location) and not self.is_picked_up[x]:
                 self.is_picked_up[x] = True
                 reward = 1000
-
         for x in range(len(self._obs_locations)):
             if np.array_equal(self._obs_locations[x], self._agent_location):
                 reward = -1000
@@ -304,8 +309,6 @@ class GridWorldEnv(gym.Env):
                     (self._agent_location + 0.5) * pix_square_size,
                     pix_square_size / (4+x),
                 )
-
-
 
         # Finally, add some gridlines
         for x in range(self.size + 1):

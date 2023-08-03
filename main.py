@@ -7,7 +7,6 @@ Created on Wed Jul  5 13:19:30 2023
 """
 
 # Code for registering the environment and running pygame window of grid_world
-
 import gym
 from gym import spaces
 import pygame
@@ -23,16 +22,24 @@ register(
 )
 
 env = gym.make("gym_examples/GridWorld-v0", render_mode="human")
+
+x1 = int(input("Set first obstacle location: first integer value in ordered pair: "))
+y1 = int(input("Set first obstacle location: second integer value in ordered pair: "))
+
+x2 = int(input("Set second obstacle location: first integer value in ordered pair: "))
+y2 = int(input("Set second obstacle location: second integer value in ordered pair: "))
+env.set_obstacles(x1, y1, x2, y2)
+
 observation, info = env.reset()
 state_size = env.get_state_size()
-print(state_size)
+#print(state_size)
 action_size = env.action_space.n
-print(action_size)
+#print(action_size)
 size = env.get_size()
-print(size)
+#print(size)
 
 states = env.get_states()
-print(states)
+#print(states)
 
 alpha = 0.8  # learning rate
 gamma = 0.8  # discount rate
@@ -43,7 +50,7 @@ q = np.zeros([state_size, action_size])
 
 # training variables
 num_episodes = 1000
-max_steps = 100  # per episode
+max_steps = 15  # per episode
 
 for episode in range(num_episodes):
     # reset the environment
@@ -52,7 +59,7 @@ for episode in range(num_episodes):
     state = states[pairTuple]
     terminated = False
     truncated = False
-    print(f"Current State {state}")
+    #print(f"Current State {state}")
 
     for s in range(max_steps):
         # exploration-exploitation tradeoff
@@ -65,16 +72,16 @@ for episode in range(num_episodes):
 
         # epsilon decreases exponentially --> our agent will explore less and less
         epsilon = np.exp(-decay_rate * episode)
-        print(f"Epsilon: {epsilon}")
+        #print(f"Epsilon: {epsilon}")
         # take action and observe reward
-        print(f"Action: {action}")
+        #print(f"Action: {action}")
         observation, reward, terminated, truncated, info = env.step(action)
-        print(observation)
+        #print(observation)
         pairTuple = (tuple(observation["agent"]), env.get_is_picked_up())
-        print(pairTuple)
+        #print(pairTuple)
         new_state = states[pairTuple]
-        print(f"New State {new_state}")
-        print(f"Reward: {reward}")
+        #print(f"New State {new_state}")
+        #print(f"Reward: {reward}")
         # Q-learning algorithm
         q[state,action] = q[state,action] + alpha * (reward + gamma * np.max(q[new_state,:])-q[state,action])
 
@@ -83,10 +90,9 @@ for episode in range(num_episodes):
 
         if terminated or truncated:
             break
-print(q)
-
+        
+#print(q)
 env.trained()
-
 
 observation, info = env.reset()
 pairTuple = (tuple(observation["agent"]), env.get_is_picked_up())
@@ -102,8 +108,8 @@ for _ in range(max_steps):
     print(f"Action: {action}")
     print(observation)
     print(pairTuple)
-    print(f"New State {new_state}")
-    print(f"Reward: {reward}")
+    #print(f"New State {new_state}")
+    #print(f"Reward: {reward}")
     rewards += reward
     print(f"score: {rewards}")
     state = new_state
