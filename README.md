@@ -16,5 +16,5 @@ The screenshot below shows data collected during the training and testing proces
 
 
 ### Future Improvements
-The project will be continued during the Fall 2023 semester by Anna Nardelli and other Monmouth Students. The plan is to create a more complex grid and potentially implement neural networks and/or Petri Nets instead of the current state-transition system. The ultimate goal is to fully simulate a hospital floor and to run full pickup and delivery sequences which could be implemented in a real hospital.
+The project will be continued during the Fall 2023 semester by Anna Nardelli and other Monmouth students. The plan is to create a more complex grid and potentially implement neural networks and/or Petri Nets instead of the current state-transition system. The ultimate goal is to fully simulate a hospital floor and to run full pickup and delivery sequences which could be implemented in a real hospital.
 
