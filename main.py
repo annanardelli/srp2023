@@ -21,7 +21,7 @@ register(
     max_episode_steps=300,
 )
 
-env = gym.make("gym_examples/GridWorld-v0", render_mode="human")
+env = gym.make("gym_examples/GridWorld-v0", render_mode="human", size=100)
 
 x1 = int(input("Set first obstacle location: first integer value in ordered pair: "))
 y1 = int(input("Set first obstacle location: second integer value in ordered pair: "))
