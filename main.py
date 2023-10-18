@@ -50,7 +50,7 @@ q = np.zeros([state_size, action_size])
 
 # training variables
 num_episodes = 1000
-max_steps = 100 # per episode
+max_steps = 300 # per episode
 
 for episode in range(num_episodes):
     # reset the environment
