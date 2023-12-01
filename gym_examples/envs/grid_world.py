@@ -101,6 +101,11 @@ class GridWorldEnv(gym.Env):
     def set_obstacles(self, x1, y1, x2, y2):
         self._obs_locations = np.array([[x1,y1], [x2,y2]])
 
+    def set_obstacles_complex(self):
+        self._obs_locations = np.array([[2, 1], [2, 2], [2, 3], [2, 4], [1, 4], [0, 4],
+                                        [5, 0], [5, 1], [5, 2], [5, 4], [6, 4], [7, 4], [8, 4], [9, 4],
+                                        [0, 7], [1, 7], [3, 7], [3, 8], [3, 9]])
+
     def get_obstacles(self):
         return self._obs_locations
 
