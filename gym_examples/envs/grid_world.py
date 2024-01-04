@@ -134,7 +134,7 @@ class GridWorldEnv(gym.Env):
         super().reset(seed=seed)
 
         # Set target location (stationary)
-        self._target_location = np.array([self.size - 1, self.size - 1])
+        self._target_location = np.array([4, 4])
 
         # Choose the agent's location uniformly at random
         """
@@ -154,7 +154,13 @@ class GridWorldEnv(gym.Env):
             """
 
         # Med location
-        self._med_locations = np.array([[0,self.size-1], [self.size-1,0]])
+        self._med_locations = np.array([[0,1], [0,2], [0,3], [0,4], [0,5], [0,6]])
+
+        '''
+        , [0,7], [0,8],
+        [1,0], [2,0], [3,0], [4,0], [5,0], [6,0], [7,0], [8,0],
+        [9,1], [9,4], [9,5], [9,6], [9,7], [9,8],
+        [1,9], [2,9], [3,9], [4,9], [5,9], [6,9], [7,9], [8,9]'''
         self.is_picked_up = np.array([False]*len(self._med_locations))
 
         # obstacle location
@@ -297,13 +303,13 @@ class GridWorldEnv(gym.Env):
                     (pix_square_size, pix_square_size),
                 ),
             )
-            y = x + 1
+
             if self.is_picked_up[x] == False:
                 pygame.draw.circle(
                     canvas,
-                    (205, 255-(33*y), 255-(51*y)),
+                    (205, 255, 255),
                     (self._med_locations[x] + 0.5) * pix_square_size,
-                    pix_square_size / (4+x),
+                    pix_square_size /4,
                 )
 
         # Now we draw the agent
@@ -320,7 +326,7 @@ class GridWorldEnv(gym.Env):
                 y = x + 1
                 pygame.draw.circle(
                     canvas,
-                    (205, 255-(33*y), 255-(51*y)),
+                    (205, 255, 255),
                     (self._agent_location + 0.5) * pix_square_size,
                     pix_square_size / (4+x),
                 )
