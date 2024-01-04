@@ -66,7 +66,8 @@ class GridWorldEnv(gym.Env):
         states = {}
         index = 0
         """
-        picked_up = np.array([False] * len(self._med_locations))
+        picked_up = np.array([False]
+         * len(self._med_locations))
         for t in range(2):
             picked_up[1] = False
             if t == 1:
@@ -106,6 +107,15 @@ class GridWorldEnv(gym.Env):
                                         [5, 0], [5, 1], [5, 2], [5, 4], [6, 4], [7, 4], [8, 4], [9, 4],
                                         [0, 7], [1, 7], [3, 7], [3, 8], [3, 9]])
 
+    def set_obstacles_hospital(self):
+        self._obs_locations = np.array([[0, 0], [0,9], [2, 2], [2, 3], [2, 4], [2, 5], [2, 6],
+                                        [3, 2], [3, 3], [3, 4], [3, 5], [3, 6],
+                                        [4, 2], [4, 5], [4, 6],
+                                        [6, 2], [6, 3], [6, 5], [6, 6],
+                                        [7, 2], [7, 3], [7, 5], [7, 6],
+                                        [8, 2], [8, 3],
+                                        [9, 0], [9, 2], [9, 3], [9, 9]])
+
     def get_obstacles(self):
         return self._obs_locations
 
@@ -133,7 +143,7 @@ class GridWorldEnv(gym.Env):
             self._agent_location = self.np_random.integers(0, self.size, size=2, dtype=int)
         """
         # Same place agent location reset
-        self._agent_location = np.array([0,0])
+        self._agent_location = np.array([4,3])
 
         # Random target location reset
         """
