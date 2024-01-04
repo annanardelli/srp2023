@@ -34,7 +34,7 @@ x2 = int(input("Set second obstacle location: first integer value in ordered pai
 y2 = int(input("Set second obstacle location: second integer value in ordered pair: "))
 env.set_obstacles(x1, y1, x2, y2)
 '''
-env.set_obstacles_complex()
+env.set_obstacles_hospital()
 observation, info = env.reset()
 state_size = env.get_state_size()
 #print(state_size)
