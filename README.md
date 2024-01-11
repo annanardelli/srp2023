@@ -7,6 +7,7 @@ Reinforcement learning (RL) is a type of machine learning that has many applicat
 
 ### Winter 2023 Progress Update
 The screenshot below shows a visualization of our simulation environment as of January 2024. It was adapted from OpenAI's GridWorld environment to suit the project's requirements. This grid is meant to model a hospital floor, with the green boxes being medication drop-off points and the red box being the robot's home station which it returns to after finishing its tasks.
+
 <img width="533" alt="Screenshot 2024-01-08 at 4 21 55 PM" src="https://github.com/annanardelli/srp2023/assets/60702479/1d3abb28-4c06-4fde-847f-6ac94bcc0169">
 
 
