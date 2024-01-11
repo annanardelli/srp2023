@@ -144,6 +144,7 @@ class GridWorldEnv(gym.Env):
         """
         # Same place agent location reset
         self._agent_location = np.array([4,3])
+        self._prev_location = []
 
         # Random target location reset
         """
@@ -191,9 +192,6 @@ class GridWorldEnv(gym.Env):
 
         observation = self._get_obs()  # Gets original/current state
         # Indexes current state
-        states = self.get_states()
-        pairTuple = (tuple(observation["agent"]), self.get_is_picked_up())
-        state = states[pairTuple]
         #print(f"Grid State: {state}")
 
         # We use `np.clip` to make sure we don't leave the grid
@@ -241,12 +239,19 @@ class GridWorldEnv(gym.Env):
         if terminated:
             reward = 100
         for x in range(len(self._med_locations)):
+            if np.array_equal(self._prev_location, self._med_locations[x]):
+                for y in range(len(self._med_locations)):
+                    if np.array_equal(self._med_locations[y], self._agent_location):
+                        reward = -500
             if action == 4 and np.array_equal(self._med_locations[x], self._agent_location) and not self.is_picked_up[x]:
                 self.is_picked_up[x] = True
                 reward = 1000
+
         for x in range(len(self._obs_locations)):
             if np.array_equal(self._obs_locations[x], self._agent_location):
                 reward = -1000
+
+        self._prev_location = observation["agent"]
 
         if self.is_trained:
             if self.render_mode == "human":
