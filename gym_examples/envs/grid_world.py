@@ -132,8 +132,8 @@ class GridWorldEnv(gym.Env):
         # We need the following line to seed self.np_random
         super().reset(seed=seed)
 
-        # Set agent location (stationary)
-        self._agent_location = np.array([4,3])
+        # Set target location (stationary)
+        self._target_location = np.array([4, 4])
 
         # Choose the agent's location uniformly at random
         """
@@ -141,9 +141,10 @@ class GridWorldEnv(gym.Env):
         while np.array_equal(self._agent_location, self._target_location):
             self._agent_location = self.np_random.integers(0, self.size, size=2, dtype=int)
         """
-
-        # Set target location (stationary)
-        self._target_location = np.array([4,4])
+        
+        # Set agent location (stationary)
+        self._agent_location = np.array([4,3])
+        self._prev_location = []
 
         # Random target location reset
         """
@@ -154,7 +155,14 @@ class GridWorldEnv(gym.Env):
             """
 
         # Med location
-        self._med_locations = np.array([[1,9],[2,9],[4,7],[7,7],[8,9]])
+        self._med_locations = np.array([[0,1], [0,2], [0,3], [0,4], [0,5], [0,6]])
+
+        '''
+        , [0,7], [0,8],
+        [1,0], [2,0], [3,0], [4,0], [5,0], [6,0], [7,0], [8,0],
+        [9,1], [9,4], [9,5], [9,6], [9,7], [9,8],
+        [1,9], [2,9], [3,9], [4,9], [5,9], [6,9], [7,9], [8,9]'''
+
         self.is_picked_up = np.array([False]*len(self._med_locations))
 
         # Obstacle location
@@ -181,7 +189,10 @@ class GridWorldEnv(gym.Env):
         # Map the action (element of {0,1,2,3}) to the direction we walk in
         #print(f"Grid Action: {action}")
         direction = self._action_to_direction[action]
-        observation = self._get_obs() # Gets original/current state
+
+        observation = self._get_obs()  # Gets original/current state
+        # Indexes current state
+        #print(f"Grid State: {state}")
 
         # We use `np.clip` to make sure we don't leave the grid
         self._agent_location = np.clip(
@@ -201,13 +212,19 @@ class GridWorldEnv(gym.Env):
             reward = 100
         # Reward for correct med location pick up 
         for x in range(len(self._med_locations)):
+            if np.array_equal(self._prev_location, self._med_locations[x]):
+                for y in range(len(self._med_locations)):
+                    if np.array_equal(self._med_locations[y], self._agent_location):
+                        reward = -500
             if action == 4 and np.array_equal(self._med_locations[x], self._agent_location) and not self.is_picked_up[x]:
                 self.is_picked_up[x] = True
                 reward = 1000
-        # Penalty for moving into an obstacle 
+                
         for x in range(len(self._obs_locations)):
             if np.array_equal(self._obs_locations[x], self._agent_location):
                 reward = -1000
+
+        self._prev_location = observation["agent"]
 
         if self.is_trained:
             if self.render_mode == "human":
@@ -265,14 +282,13 @@ class GridWorldEnv(gym.Env):
                     (pix_square_size, pix_square_size),
                 ),
             )
-            y = x + 1
+
             if self.is_picked_up[x] == False:
                 pygame.draw.circle(
                     canvas,
-                    #(205, 255-(33*y), 255-(51*y)) decrements color 
                     (205, 255, 255),
                     (self._med_locations[x] + 0.5) * pix_square_size,
-                    pix_square_size / 4, 
+                    pix_square_size /4,
                 )
 
         # Agent
@@ -289,7 +305,7 @@ class GridWorldEnv(gym.Env):
                 y = x + 1
                 pygame.draw.circle(
                     canvas,
-                    (205, 255-(33*y), 255-(51*y)),
+                    (205, 255, 255),
                     (self._agent_location + 0.5) * pix_square_size,
                     pix_square_size / (4+x),
                 )

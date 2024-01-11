@@ -16,7 +16,7 @@ import random
 from gym.envs.registration import register
 
 #sets max steps for both register() and training agent
-max_steps = 500
+max_steps = 1000
 
 register(
     id='gym_examples/GridWorld-v0',
