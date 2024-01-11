@@ -210,16 +210,18 @@ class GridWorldEnv(gym.Env):
         # Reward for terminating at the ending location
         if terminated:
             reward = 100
-        # Reward for correct med location pick up 
         for x in range(len(self._med_locations)):
+            # Penalty for moving between med pick up locations (rooms) 
             if np.array_equal(self._prev_location, self._med_locations[x]):
                 for y in range(len(self._med_locations)):
                     if np.array_equal(self._med_locations[y], self._agent_location):
                         reward = -500
+            # Reward for correct med location pick up 
             if action == 4 and np.array_equal(self._med_locations[x], self._agent_location) and not self.is_picked_up[x]:
                 self.is_picked_up[x] = True
                 reward = 1000
-                
+        
+        # Penalty for moving into an obstacle
         for x in range(len(self._obs_locations)):
             if np.array_equal(self._obs_locations[x], self._agent_location):
                 reward = -1000
