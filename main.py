@@ -109,7 +109,7 @@ for _ in range(max_steps):
     observation, reward, terminated, truncated, info = env.step(action)
     pairTuple = (tuple(observation["agent"]), env.get_is_picked_up())
     new_state = states[pairTuple]
-    print(f"Current State {state}")
+    print(f"Current State: {state}")
     print(f"Action: {action}")
     print(observation)
     print(pairTuple)
