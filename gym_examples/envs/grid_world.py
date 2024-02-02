@@ -67,13 +67,14 @@ class GridWorldEnv(gym.Env):
         states = {}
         index = 0
 
-        for x in range(self.size):
-            for y in range(self.size):
-                for p in itertools.product([True, False], repeat=len(self._med_locations)):
-                    pair = ((y, x), p)
+        staterange = range(self.size)
+        for c in itertools.product(staterange, repeat=2):
+            for p in itertools.product([True, False], repeat=len(self._med_locations)):
+                    pair = (c, p)
                     states[pair] = index
                     index += 1
 
+        print(states)
         return states
 
     def get_is_picked_up(self):
