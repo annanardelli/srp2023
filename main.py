@@ -6,15 +6,26 @@ Created on Wed Jul  5 13:19:30 2023
 @author: lukeshao
 """
 
+import torch
+
 # Code for registering the environment and running pygame window of grid_world
 import gym
+from gym import spaces
+import pygame
 import numpy as np
 import random
 
 from gym.envs.registration import register
 
-# sets max steps for both register() and training agent
-max_steps = 1000
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+tensor = torch.tensor([1.0, 2.0]).to(device)
+
+print(torch.__version__)
+print(torch.cuda.is_available())
+
+
+#sets max steps for both register() and training agent
+max_steps = 500
 
 register(
     id='gym_examples/GridWorld-v0',
@@ -35,24 +46,25 @@ env.set_obstacles(x1, y1, x2, y2)
 env.set_obstacles_hospital()
 observation, info = env.reset()
 state_size = env.get_state_size()
-
+#print(state_size)
 action_size = env.action_space.n
-
+#print(action_size)
 size = env.get_size()
-
+#print(size)
 
 states = env.get_states()
+#print(states)
 
 alpha = 0.8  # learning rate
 gamma = 0.8  # discount rate
 epsilon = 1.0  # probability that our agent will explore
-decay_rate = 0.001  # of epsilon
+decay_rate = 0.001 # of epsilon
 
 q = np.zeros([state_size, action_size])
 
 # training variables
 num_episodes = 1000
-max_steps_training = max_steps  # per episode
+max_steps_training = max_steps # per episode
 
 for episode in range(num_episodes):
     # reset the environment
@@ -61,34 +73,39 @@ for episode in range(num_episodes):
     state = states[pairTuple]
     terminated = False
     truncated = False
+    #print(f"Current State {state}")
 
-    #states
     for s in range(max_steps_training):
         # exploration-exploitation tradeoff
-        if random.uniform(0, 1) < epsilon:
+        if random.uniform(0,1) < epsilon:
             # explore
             action = env.action_space.sample()
         else:
             # exploit
-            action = np.argmax(q[state, :])
+            action = np.argmax(q[state,:])
 
         # epsilon decreases exponentially --> our agent will explore less and less
         epsilon = np.exp(-decay_rate * episode)
-
+        #print(f"Epsilon: {epsilon}")
         # take action and observe reward
+        #print(f"Action: {action}")
         observation, reward, terminated, truncated, info = env.step(action)
+        #print(observation)
         pairTuple = (tuple(observation["agent"]), env.get_is_picked_up())
+        #print(pairTuple)
         new_state = states[pairTuple]
-
+        #print(f"New State {new_state}")
+        #print(f"Reward: {reward}")
         # Q-learning algorithm
-        q[state, action] = q[state, action] + alpha * (reward + gamma * np.max(q[new_state, :]) - q[state, action])
+        q[state,action] = q[state,action] + alpha * (reward + gamma * np.max(q[new_state,:])-q[state,action])
 
         # Update to our new state
         state = new_state
 
         if terminated or truncated:
             break
-
+        
+#print(q)
 env.trained()
 
 observation, info = env.reset()
@@ -101,18 +118,18 @@ for _ in range(max_steps):
     observation, reward, terminated, truncated, info = env.step(action)
     pairTuple = (tuple(observation["agent"]), env.get_is_picked_up())
     new_state = states[pairTuple]
-
-    print(f"Current State: {state}")
+    print(f"Current State {state}")
     print(f"Action: {action}")
     print(observation)
     print(pairTuple)
-
+    #print(f"New State {new_state}")
+    #print(f"Reward: {reward}")
     rewards += reward
     print(f"score: {rewards}")
     state = new_state
 
     if terminated or truncated:
-        print("Steps Taken: " + str(_ + 1))
+        print("Steps Taken: " + str(_+1))
         break
 
 env.close()
