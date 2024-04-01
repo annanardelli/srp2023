@@ -25,7 +25,8 @@ print(torch.cuda.is_available())
 
 
 #sets max steps for both register() and training agent
-max_steps = 500
+max_steps = 150
+
 
 register(
     id='gym_examples/GridWorld-v0',
@@ -55,8 +56,8 @@ size = env.get_size()
 states = env.get_states()
 #print(states)
 
-alpha = 0.8  # learning rate
-gamma = 0.8  # discount rate
+alpha = 0.9  # learning rate
+gamma = 0.99  # discount rate
 epsilon = 1.0  # probability that our agent will explore
 decay_rate = 0.001 # of epsilon
 
@@ -133,3 +134,4 @@ for _ in range(max_steps):
         break
 
 env.close()
+
